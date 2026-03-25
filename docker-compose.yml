@@ -1,0 +1,18 @@
+services:
+  orchestrator:
+    build:
+      context: .
+      dockerfile: packages/api/Dockerfile
+    container_name: orchestrator
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - CALENDAR_API_URL=http://calendario:3000
+      - TODO_API_URL=http://todo-app:3001
+
+networks:
+  default:
+    name: pi-network
+    external: true

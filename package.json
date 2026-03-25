@@ -1,0 +1,15 @@
+{
+  "name": "orchestrator",
+  "private": true,
+  "workspaces": ["packages/api", "packages/web"],
+  "scripts": {
+    "dev:api": "npm run dev --workspace=packages/api",
+    "dev:web": "npm run dev --workspace=packages/web",
+    "dev": "concurrently \"npm:dev:api\" \"npm:dev:web\"",
+    "build": "npm run build --workspace=packages/web && npm run build --workspace=packages/api",
+    "start": "npm run start --workspace=packages/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
