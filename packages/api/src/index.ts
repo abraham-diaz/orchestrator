@@ -16,15 +16,27 @@ app.use('/api/calendar', calendarRoutes);
 app.use('/api/todos', todosRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-// Serve frontend in production
-if (process.env.NODE_ENV === 'production') {
-  const publicPath = path.join(__dirname, '..', 'public');
-  app.use(express.static(publicPath));
-  app.get('*', (_req, res) => {
-    res.sendFile(path.join(publicPath, 'index.html'));
+async function start() {
+  if (process.env.NODE_ENV === 'production') {
+    // Production: serve built frontend files
+    const publicPath = path.join(__dirname, '..', 'public');
+    app.use(express.static(publicPath));
+    app.get('*', (_req, res) => {
+      res.sendFile(path.join(publicPath, 'index.html'));
+    });
+  } else {
+    // Development: integrate Vite dev server as middleware
+    const { createServer } = await import('vite');
+    const vite = await createServer({
+      root: path.join(__dirname, '..', '..', 'web'),
+      server: { middlewareMode: true },
+    });
+    app.use(vite.middlewares);
+  }
+
+  app.listen(config.port, () => {
+    console.log(`Orchestrator running on http://localhost:${config.port}`);
   });
 }
 
-app.listen(config.port, () => {
-  console.log(`Orchestrator running on http://localhost:${config.port}`);
-});
+start();
