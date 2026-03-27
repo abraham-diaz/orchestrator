@@ -5,6 +5,7 @@ COPY package.json package-lock.json ./
 COPY packages/web/package.json ./packages/web/
 COPY packages/api/package.json ./packages/api/
 RUN npm ci --workspace=packages/web
+COPY tsconfig.base.json ./
 COPY packages/web/ ./packages/web/
 RUN npm run build --workspace=packages/web
 
